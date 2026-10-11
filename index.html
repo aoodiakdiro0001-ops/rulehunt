@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RuleHunt | YARA / Sigma / Nuclei Rules Repository</title>
+<meta name="description" content="Aggregate open-source YARA, Sigma and Nuclei detection rules from GitHub. Fast search, daily updates, file viewer and alerts.">
+<link rel="canonical" href="https://aoodiakdiro0001-ops.github.io/rulehunt/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0f1c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RuleHunt | Detection Rules Repository">
+<meta property="og:description" content="YARA, Sigma and Nuclei rules in one searchable place.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Consolas,monospace}
+:root{--bg:#0a0f1c;--panel:#121a30;--line:#26325c;--grn:#34d399;--blu:#60a5fa;--ylw:#fbbf24;--pur:#c084fc;--txt:#dce4f4;--mut:#8b98b8;--red:#f87171}
+body{background:var(--bg);color:var(--txt)}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-size:22px;font-weight:900;color:var(--blu)}
+.logo small{display:block;font-size:11px;color:var(--mut);font-weight:400}
+.live{font-size:11px;font-weight:800;color:var(--grn);border:1px solid var(--grn);border-radius:12px;padding:3px 10px}
+header select{margin-left:auto;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:7px 10px;font-size:13px}
+.stats{display:flex;gap:12px;padding:14px 20px 0;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+.stat{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{font-size:20px;color:var(--blu);display:block}
+.stat span{font-size:11.5px;color:var(--mut)}
+.tabs{display:flex;gap:6px;padding:14px 16px 0;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+.tabs button{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-bottom:none;padding:10px 16px;border-radius:12px 12px 0 0;cursor:pointer;font-weight:800;font-size:13px}
+.tabs button.on{background:#1a2352;color:var(--blu)}
+main{max-width:1100px;margin:0 auto;padding:18px 15px 60px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:0 14px 14px 14px;padding:22px;display:none}
+.panel.on{display:block}
+.panel h2{color:var(--blu);margin-bottom:6px;font-size:19px}
+.panel p.sub{color:var(--mut);font-size:13px;margin-bottom:12px;line-height:1.7}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+input[type=text],input[type=password],select{background:#0a0f1c;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:10px 13px;font-size:13.5px;outline:none}
+button.go{background:var(--blu);color:#06121f;border:none;padding:10px 22px;border-radius:10px;font-weight:900;cursor:pointer;font-size:14px}
+button.alt{background:transparent;color:var(--blu);border:1px solid var(--blu);padding:9px 16px;border-radius:10px;cursor:pointer;font-size:13px}
+button.sm{padding:5px 12px;font-size:12px}
+.note{background:#1a2352;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--mut);margin:10px 0;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:12px}
+.card{background:#0a0f1c;border:1px solid var(--line);border-radius:14px;padding:16px;font-size:13px}
+.card h3{font-size:15px;margin-bottom:4px}
+.card h3 a{color:var(--blu);text-decoration:none}
+.card .meta{font-size:12px;color:var(--mut);line-height:1.9}
+.card .meta b{color:var(--grn)}
+.pill{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:10px;background:#1a2352;color:var(--blu);margin:2px 4px 2px 0}
+.pill.y{background:#3a2c10;color:var(--ylw)} .pill.g{background:#0e2a1d;color:var(--grn)}
+pre.view{background:#0a0f1c;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;overflow:auto;max-height:440px;direction:ltr;text-align:left;white-space:pre-wrap;margin-top:10px}
+table.bt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+table.bt th,table.bt td{border-bottom:1px solid var(--line);padding:9px 7px;text-align:left;vertical-align:top}
+table.bt th{color:var(--blu);font-size:12px}
+table.bt td.mono{font-family:monospace;font-size:11.5px}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+.plan{background:#0a0c14;background:#0a0e1a;border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.plan.hot{border-color:var(--blu)}
+.plan .amt{font-size:30px;font-weight:900;color:var(--blu)}
+.plan ul{list-style:none;font-size:13px;margin:12px 0;line-height:2}
+.plan small{color:var(--mut)}
+.paybox{background:#0a0e1a;border:1px solid var(--grn);border-radius:14px;padding:16px;margin-top:12px;font-size:13px}
+.paybox code{direction:ltr;display:block;font-family:monospace;font-size:12px;color:var(--grn);word-break:break-all;margin:4px 0}
+.paybox{background:#0a0e1a;border:1px solid var(--grn);border-radius:14px;padding:16px;margin-top:12px;font-size:13px}
+.paybox code{direction:ltr;display:block;font-family:monospace;font-size:12px;color:var(--grn);word-break:break-all;margin:4px 0}
+.adslot{max-width:1100px;margin:12px auto 0;padding:0 15px;text-align:center}
+.adslot .ph{display:block;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-size:12px;padding:10px}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:26px 16px;border-top:1px solid var(--line);line-height:2}
+footer a{color:var(--grn)}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:12px 25px;border-radius:25px;z-index:200;display:none;font-size:14px;max-width:92vw;text-align:center}
+.prog{height:8px;background:#0a0e1a;border-radius:6px;overflow:hidden;margin:8px 0}
+.prog div{height:100%;background:var(--blu);width:0%}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">🎯 RuleHunt<small data-i="tag"></small></div>
+<span class="live">● LIVE</span>
+<select id="langSel" onchange="setLang(this.value)">
+<option value="en" selected>🇬🇧 English</option><option value="tr">🇹🇷 Türkçe</option><option value="ar">🇸🇦 العربية</option>
+</select>
+</header>
+<div class="stats">
+<div class="stat"><b id="stRepos">7</b><span data-i="stR"></span></div>
+<div class="stat"><b id="stFiles">—</b><span data-i="stF"></span></div>
+<div class="stat"><b id="stStars">—</b><span data-i="stS"></span></div>
+<div class="stat"><b id="stRate">60/h</b><span data-i="stQ"></span></div>
+</div>
+<div class="tabs" id="tabs"></div>
+<main>
+<section class="panel on" id="p-repos">
+<h2 data-i="rT"></h2><p class="sub" data-i="rS"></p>
+<div class="row"><input type="password" id="ghTok" data-i-ph="tokPh" style="max-width:260px;direction:ltr"><button class="alt" onclick="saveTok()" data-i="btnTok"></button><span id="rateLine" style="font-size:12px;color:var(--mut)"></span></div>
+<div class="grid" id="repoGrid"></div>
+</section>
+<section class="panel" id="p-search">
+<h2 data-i="sT"></h2><p class="sub" data-i="sS"></p>
+<div class="row"><input type="text" id="qS" data-i-ph="searchPh" style="flex:1;min-width:200px" oninput="renderSearch()"><select id="fKind" onchange="renderSearch()"></select></div>
+<div class="prog"><div id="idxBar"></div></div>
+<div class="row" style="font-size:12.5px;color:var(--mut)"><span id="idxLine"></span></div>
+<div class="grid" id="searchGrid"></div>
+<div id="fileView"></div>
+</section>
+<section class="panel" id="p-updates">
+<h2 data-i="uT"></h2><p class="sub" data-i="uS"></p>
+<div class="row"><button class="go" onclick="loadUpdates(true)" data-i="btnUpd"></button><span id="updLine" style="font-size:12px;color:var(--mut)"></span></div>
+<div id="updList"></div>
+</section>
+<section class="panel" id="p-alerts">
+<h2 data-i="aT"></h2><p class="sub" data-i="aS"></p>
+<div class="row"><button class="go" onclick="enableNotif()" data-i="btnNotif"></button><button class="alt" onclick="testNotif()" data-i="btnTest"></button></div>
+<div class="row"><input type="text" id="wIn" data-i-ph="wPh" style="flex:1;min-width:200px;direction:ltr"><button class="go" onclick="wAdd()" data-i="btnAdd"></button></div>
+<div id="wList"></div>
+<div class="plans">
+<div class="plan"><b data-i="freeN"></b><div class="amt">$0</div><ul><li data-i="fF1"></li><li data-i="fF2"></li><li data-i="fF3"></li></ul></div>
+<div class="plan hot"><b data-i="proN"></b><div class="amt">$<span id="proAmt">7</span><small>/mo</small></div><ul><li data-i="fP1"></li><li data-i="fP2"></li><li data-i="fP3"></li></ul><button class="go" onclick="proJoin()" data-i="btnJoin"></button><br><small data-i="proNote"></small></div>
+</div>
+<div class="paybox" id="payBox"></div>
+<div class="paybox" id="payBox"></div>
+</section>
+</main>
+<div class="adslot" id="adFoot"><span class="ph" data-i="adHere" style="display:block;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-size:12px;padding:10px"></span></div>
+<footer><span data-i="foot"></span><br>📧 <a href="mailto:baranavisat@gmail.com">baranavisat@gmail.com</a> · 📞 <a href="tel:+905313263722" dir="ltr">+90 531 326 37 22</a> · <a href="https://wa.me/905313263722" target="_blank" rel="noopener">WhatsApp</a><br><a href="README.md" target="_blank">README</a> · MIT · <span data-i="srcNote"></span></footer>
+<div id="toast"></div>
+<script>
+const CONFIG={ads:{client:'',slot:'',carbonServe:'',carbonPlacement:''},proPrice:7,
+pay:{btc:'bc1q8dhtdrndxsl70e97t8grydfe6pjue37zrhzf6c',usdt:'TLWdTjqqogkXNEXGiPWsGdjFP6ioycxeWW',name:'Baran Avisat',try:'TR10 0001 0090 1008 4013 0050 01',usd:'TR80 0001 0090 1008 4013 0050 02'}};
+const REPOS=[
+{o:'Yara-Rules',r:'rules',kind:'YARA',u:'https://github.com/Yara-Rules/rules'},
+{o:'Neo23x0',r:'signature-base',kind:'YARA',u:'https://github.com/Neo23x0/signature-base'},
+{o:'advanced-threat-research',r:'Yara-Rules',kind:'YARA',u:'https://github.com/advanced-threat-research/Yara-Rules'},
+{o:'eset',r:'malware-ioc',kind:'YARA',u:'https://github.com/eset/malware-ioc'},
+{o:'SigmaHQ',r:'sigma',kind:'Sigma',u:'https://github.com/SigmaHQ/sigma'},
+{o:'projectdiscovery',r:'nuclei-templates',kind:'Nuclei',u:'https://github.com/projectdiscovery/nuclei-templates'},
+{o:'OTRF',r:'Security-Datasets',kind:'Data',u:'https://github.com/OTRF/Security-Datasets'}];
+const T={
+en:{tag:'YARA / Sigma / Nuclei rules in one place',tabR:'📚 Repos',tabS:'⚡ Fast Search',tabU:'📰 Updates',tabA:'🔔 Alerts & Pro',
+stR:'repos tracked',stF:'files indexed',stS:'total stars',stQ:'API quota left',
+rT:'📚 Tracked Repositories',rS:'Live stats straight from GitHub API. Index a repo to make its files searchable. Optional personal token raises quota 60 → 5000/hr.',
+tokPh:'GitHub token (optional)',btnTok:'Save token',
+sT:'⚡ Fast Rule Search',sS:'Searches file paths across indexed repos instantly. Open any file to view, validate, copy or download it.',
+searchPh:'🔍 vulnerability or threat name (e.g. log4j, mimikatz, cve-2021)...',
+uT:'📰 Daily Updates Board',uS:'Latest commits across all tracked repos — new and updated rules as they land.',
+btnUpd:'Refresh updates',
+aT:'🔔 Rule Alerts',aS:'Watch keywords (threat names, CVE-IDs). Matching commits trigger a browser alert. Pro adds Telegram instant alerts (backend required).',
+btnNotif:'Enable alerts',btnTest:'Test alert',wPh:'keyword or CVE-ID...',btnAdd:'Watch',
+freeN:'Watcher (Free)',proN:'Sentinel (Pro)',fF1:'✓ Board + search + viewer',fF2:'✓ Browser keyword alerts',fF3:'✓ With ads',fP1:'✓ Telegram instant alerts',fP2:'✓ Webhook / API access',fP3:'✓ No ads',btnJoin:'Join Pro',proNote:'Interest saved; backend worker required for delivery.',
+adHere:'Security & cloud ads here',foot:'RuleHunt — free aggregator. Rules belong to their authors (see licenses).',srcNote:'Source: GitHub public API',
+copied:'Copied ✅',needKw:'Enter a keyword ⚠️',added:'Watching ✅',dup:'Already watched ⚠️',permOn:'Alerts ON ✅',permOff:'Denied ⚠️',testT:'RuleHunt test ✅',testB:'Alerts work.',joined:'Saved ✅',nodata:'GitHub unreachable / rate-limited — retry ⚠️',indexedL:'indexed',filesL:'files',starsL:'★',updatedL:'pushed',viewB:'View',dlB:'⬇ Raw',valB:'Validate',copyB:'Copy',openB:'Open ↗',newL:'NEW',payT2:'💎 Pay',closeB:'Close',okV:'structure OK ✅',warnV:'check manually ⚠️',valT:'Validation',expiresL:'Quota resets'},
+tr:{tag:'YARA / Sigma / Nuclei kuralları tek yerde',tabR:'📚 Repolar',tabS:'⚡ Hızlı Arama',tabU:'📰 Güncellemeler',tabA:'🔔 Alarm & Pro',
+stR:'izlenen repo',stF:'indeksli dosya',stS:'toplam yıldız',stQ:'kalan kota',
+rT:'📚 İzlenen Repolar',rS:'Canlı istatistikler GitHub API\u2019den. Aranabilir yapmak için repo indeksleyin. Token kotayı 60 → 5000/saat yapar.',
+tokPh:'GitHub token (opsiyonel)',btnTok:'Kaydet',
+sT:'⚡ Hızlı Kural Arama',sS:'İndeksli repolarda dosya adında anında arama. Dosyayı açın, doğrulayın, kopyalayın.',
+searchPh:'🔍 zafiyet/tehdit adı (örn. log4j, mimikatz)...',
+uT:'📰 Günlük Güncellemeler',uS:'Tüm repolardaki son commit\u2019ler — yeni kurallar düştükçe.',
+btnUpd:'Güncellemeleri tazele',
+aT:'🔔 Kural Alarmları',aS:'Anahtar kelime izleyin (tehdit/CVE). Eşleşen commit tarayıcı alarmı verir. Pro: Telegram (backend gerekir).',
+btnNotif:'Alarmları aç',btnTest:'Test alarmı',wPh:'anahtar kelime veya CVE-ID...',btnAdd:'İzle',
+freeN:'Watcher (Ücretsiz)',proN:'Sentinel (Pro)',fF1:'✓ Pano + arama + görüntüleyici',fF2:'✓ Tarayıcı alarmı',fF3:'✓ Reklamlı',fP1:'✓ Telegram anlık alarm',fP2:'✓ Webhook / API',fP3:'✓ Reklamsız',btnJoin:'Katıl',proNote:'İlgi kaydedilir; iletim backend ister.',
+adHere:'Güvenlik & bulut reklamları burada',foot:'RuleHunt — ücretsiz toplayıcı. Kurallar yazarlarınındır.',srcNote:'Kaynak: GitHub public API',
+copied:'Kopyalandı ✅',needKw:'Anahtar kelime yazın ⚠️',added:'İzleniyor ✅',dup:'Zaten izleniyor ⚠️',permOn:'Alarm açık ✅',permOff:'Reddedildi ⚠️',testT:'Test ✅',testB:'Çalışıyor.',joined:'Kaydedildi ✅',nodata:'Ulaşılamadı / kota — retry ⚠️',indexedL:'indeksli',filesL:'dosya',starsL:'★',updatedL:'itildi',viewB:'Görüntüle',dlB:'⬇ Ham',valB:'Doğrula',copyB:'Kopyala',openB:'Aç ↗',newL:'YENİ',payT2:'💎 Öde',closeB:'Kapat',okV:'yapı OK ✅',warnV:'elle kontrol ⚠️',valT:'Doğrulama',expiresL:'Kota sıfırlanma'},
+ar:{tag:'قواعد YARA / Sigma في مكان واحد',tabR:'📚 المستودعات',tabS:'⚡ بحث سريع',tabU:'📰 التحديثات',tabA:'🔔 التنبيهات',
+stR:'مستودعات',stF:'ملفات مفهرسة',stS:'نجوم',stQ:'الحصة المتبقية',
+rT:'📚 المستودعات المتتبعة',rS:'إحصاءات حية من GitHub. فهرس المستودع لجعله قابلاً للبحث. التوكن يرفع الحصة.',
+tokPh:'توكن GitHub (اختياري)',btnTok:'احفظ',
+sT:'⚡ بحث سريع',sS:'بحث فوري في أسماء الملفات. افتح أي ملف للعرض والتحقق والنسخ.',
+searchPh:'🔍 اسم الثغرة (log4j, mimikatz)...',
+uT:'📰 تحديثات يومية',uS:'أحدث الـ commits — القواعد الجديدة فور نزولها.',
+btnUpd:'حدّث',
+aT:'🔔 تنبيهات القواعد',aS:'تابع كلمات (تهديدات/CVE). المطابقات تنبه في المتصفح. Pro: تيليغرام (يحتاج backend).',
+btnNotif:'فعّل التنبيهات',btnTest:'تجريبي',wPh:'كلمة أو CVE-ID...',btnAdd:'تابع',
+freeN:'المراقب (مجاناً)',proN:'الحارس (Pro)',fF1:'✓ اللوحة + البحث',fF2:'✓ تنبيه المتصفح',fF3:'✓ مع إعلانات',fP1:'✓ تيليغرام فوري',fP2:'✓ Webhook / API',fP3:'✓ بدون إعلانات',btnJoin:'اشترك',proNote:'يُحفظ الاهتمام؛ التوصيل يحتاج backend.',
+adHere:'إعلانات الأمن والسحابة هنا',foot:'RuleHunt — مجمّع مجاني. القواعد لأصحابها.',srcNote:'المصدر: GitHub API',
+copied:'تم ✅',needKw:'اكتب كلمة ⚠️',added:'تُتابَع ✅',dup:'مُتابعة ⚠️',permOn:'مفعّل ✅',permOff:'مرفوض ⚠️',testT:'تجربة ✅',testB:'يعمل.',joined:'حُفظ ✅',nodata:'تعذر الوصول ⚠️',indexedL:'مفهرس',filesL:'ملفات',starsL:'★',updatedL:'دُفع',viewB:'عرض',dlB:'⬇ خام',valB:'تحقق',copyB:'نسخ',openB:'افتح ↗',newL:'جديد',payT2:'💎 ادفع',closeB:'إغلاق',okV:'البنية سليمة ✅',warnV:'تحقق يدوياً ⚠️',valT:'التحقق',expiresL:'تصفير الحصة'}};
+let lang='en';
+const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
+function setLang(v){lang=v;document.documentElement.lang=v;document.documentElement.dir=(v==='ar')?'rtl':'ltr';document.getElementById('langSel').value=v;
+document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=t(e.dataset.i);});
+document.querySelectorAll('[data-i-ph]').forEach(e=>{e.placeholder=t(e.dataset.iPh);});
+buildTabs();renderRepos();renderPay();}
+const TABS=[['repos','tabR'],['search','tabS'],['updates','tabU'],['alerts','tabA']];
+function buildTabs(){document.getElementById('tabs').innerHTML=TABS.map(x=>`<button id="tab-${x[0]}" onclick="tab('${x[0]}')">${t(x[1])}</button>`).join('');document.getElementById('tab-repos').classList.add('on');}
+function tab(w){TABS.forEach(x=>{const b=document.getElementById('tab-'+x[0]);if(b)b.classList.toggle('on',w===x[0]);document.getElementById('p-'+x[0]).classList.toggle('on',w===x[0]);});}
+function toast(m){let d=document.getElementById('toast');d.textContent=m;d.style.display='block';clearTimeout(d._h);d._h=setTimeout(()=>d.style.display='none',2200);}
+function sGet(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function sSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ghH(){const h={'Accept':'application/vnd.github+json'};const tok=sGet('rh_tok','');if(tok)h['Authorization']='Bearer '+tok;return h;}
+async function gh(path){const r=await fetch('https://api.github.com'+path,{headers:ghH()});
+const q={left:r.headers.get('x-ratelimit-remaining'),reset:r.headers.get('x-ratelimit-reset')};
+if(!r.ok){const e=new Error('gh '+r.status);e.quota=q;throw e;}
+return {data:await r.json(),quota:q};}
+function showQuota(q){if(!q)return;const el=document.getElementById('rateLine');if(el&&q.left!=null){let s=t('stQ')+': '+q.left;if(q.reset)s+=' · '+t('expiresL')+' '+new Date(q.reset*1000).toLocaleTimeString();el.textContent=s;document.getElementById('stRate').textContent=q.left;}}
+function saveTok(){const v=document.getElementById('ghTok').value.trim();sSet('rh_tok',v);toast(t('copied'));loadRepos();}
+let meta={};
+async function loadRepos(){
+const g=document.getElementById('repoGrid');g.innerHTML='<p style="color:var(--mut)">…</p>';
+for(const r of REPOS){
+try{
+const {data,quota}=await gh('/repos/'+r.o+'/'+r.r);
+showQuota(quota);
+meta[r.o+'/'+r.r]={stars:data.stargazers_count||0,forks:data.forks_count||0,pushed:data.pushed_at||'',branch:data.default_branch||'main',desc:data.description||''};
+}catch(e){meta[r.o+'/'+r.r]=meta[r.o+'/'+r.r]||{stars:0,forks:0,pushed:'',branch:'main',desc:''};}
+}
+renderRepos();
+}
+function repoKey(r){return r.o+'/'+r.r;}
+function renderRepos(){
+let stars=0;
+document.getElementById('repoGrid').innerHTML=REPOS.map(r=>{const m=meta[repoKey(r)]||{};stars+=m.stars||0;
+const idx=INDEX[repoKey(r)];
+return `<div class="card"><h3><a target="_blank" rel="noopener" href="${r.u}">${r.o}/${r.r}</a></h3><div><span class="pill">${r.kind}</span>${idx?`<span class="pill g">${idx.files.length} ${t('indexedL')}</span>`:''}</div><div class="meta">★ <b>${(m.stars||0).toLocaleString('en-US')}</b> · forks ${(m.forks||0).toLocaleString('en-US')}<br>${t('updatedL')}: ${m.pushed?m.pushed.slice(0,10):'—'} · ${(m.desc||'').slice(0,90)}</div><div class="row"><button class="alt sm" style="padding:6px 12px;font-size:12px" onclick="indexRepo('${r.o}','${r.r}')">${t('indexedL')} ⚡</button><a target="_blank" rel="noopener" style="color:var(--blu);font-size:12.5px" href="${r.u}">${t('openB')}</a></div><div class="prog" id="pg-${r.o}-${r.r}" style="display:none"><div></div></div></div>`;}).join('');
+document.getElementById('stStars').textContent=stars?stars.toLocaleString('en-US'):'—';
+const tot=Object.keys(INDEX).reduce((s,k)=>s+INDEX[k].files.length,0);
+document.getElementById('stFiles').textContent=tot?tot.toLocaleString('en-US'):'—';
+}
+let INDEX={};
+function isRule(p){return /\.(yar|yara|sigma|yml|yaml)$/i.test(p);}
+async function indexRepo(o,r){
+const k=o+'/'+r,bar=document.getElementById('pg-'+o+'-'+r);
+try{
+if(bar){bar.style.display='block';bar.firstChild.style.width='20%';}
+const m=meta[k]||{branch:'main'};
+const {data,quota}=await gh('/repos/'+o+'/'+r+'/git/trees/'+(m.branch||'main')+'?recursive=1');
+showQuota(quota);
+if(bar)bar.firstChild.style.width='70%';
+const files=(data.tree||[]).filter(x=>x.type==='blob'&&isRule(x.path)).map(x=>({p:x.path,s:x.size||0,sha:x.sha}));
+INDEX[k]={files,at:Date.now()};
+if(bar)bar.firstChild.style.width='100%';
+renderRepos();renderSearch();toast(files.length+' ✓');
+setTimeout(()=>{if(bar)bar.style.display='none';},800);
+}catch(e){toast(t('nodata'));if(bar)bar.style.display='none';}
+}
+function renderSearch(){
+const q=document.getElementById('qS').value.trim().toLowerCase();
+const kind=document.getElementById('fKind').value;
+const all=[];
+Object.keys(INDEX).forEach(k=>{INDEX[k].files.forEach(f=>{const rk=REPOS.find(x=>repoKey(x)===k);all.push({repo:k,path:f.p,kind:rk?rk.kind:'?',size:f.s,sha:f.sha});});});
+const list=all.filter(f=>(!kind||f.kind===kind)&&(!q||f.path.toLowerCase().includes(q))).slice(0,150);
+const kinds=[...new Set(Object.keys(INDEX).map(k=>{const r=REPOS.find(x=>repoKey(x)===k);return r?r.kind:'?';}))];
+const fs=document.getElementById('fKind');
+if(!fs.options.length)fs.innerHTML='<option value="">ALL</option>'+kinds.map(x=>`<option>${x}</option>`).join('');
+document.getElementById('idxLine').textContent=Object.keys(INDEX).length+' repos · '+all.length+' files';
+document.getElementById('searchGrid').innerHTML=list.map((f,i)=>`<div class="card"><h3 style="font-size:13px;direction:ltr;text-align:left">${esc(f.path.split('/').pop())}</h3><div><span class="pill">${f.kind}</span></div><div class="meta" dir="ltr">${esc(f.repo)}<br>${esc(f.path).slice(0,80)}</div><div class="row"><button class="alt sm" style="padding:6px 12px;font-size:12px" onclick="viewFile('${f.repo}','${esc(f.path)}'.replace(/&amp;/g,'&'))">${t('viewB')}</button></div></div>`).join('');
+}
+async function viewFile(repo,path){
+const [o,r]=repo.split('/');const m=meta[repo]||{branch:'main'};
+const box=document.getElementById('fileView');box.innerHTML='<p style="color:var(--mut)">…</p>';
+box.scrollIntoView({behavior:'smooth',block:'nearest'});
+try{
+const res=await fetch('https://raw.githubusercontent.com/'+o+'/'+r+'/'+(m.branch||'main')+'/'+path.split('/').map(encodeURIComponent).join('/'));
+if(!res.ok)throw 0;const txt=(await res.text()).slice(0,60000);
+const chk=validateRule(path,txt);
+box.innerHTML=`<h3 style="direction:ltr">${esc(path.split('/').pop())} <small style="color:var(--mut)">${repo}</small></h3><div class="note">${t('valT')}: ${chk.ok?'✅ '+t('okV'):'⚠️ '+t('warnV')} — ${esc(chk.msg)}</div><pre class="view">${esc(txt.slice(0,12000))}</pre><div class="row"><button class="alt" onclick="copyTxt2(this)" data-t="${encodeURIComponent(txt.slice(0,60000))}">${t('copyB')}</button><a class="alt" style="text-decoration:none" target="_blank" rel="noopener" href="https://raw.githubusercontent.com/${o}/${r}/${m.branch||'main'}/${path.split('/').map(encodeURIComponent).join('/')}">${t('dlB')}</a></div>`;
+}catch(e){box.innerHTML='<p style="color:var(--mut)">'+t('nodata')+'</p>';}
+}
+function copyTxt2(el){try{const s=decodeURIComponent(el.getAttribute('data-t'));if(navigator.clipboard)navigator.clipboard.writeText(s);}catch(e){}toast(t('copied'));}
+function validateRule(path,txt){
+const low=path.toLowerCase();
+if(/\.yara?$/.test(low)){const hasR=/^\s*rule\s+\w+/m.test(txt),hasS=/strings\s*:/.test(txt),hasC=/condition\s*:/.test(txt);
+return {ok:hasR&&hasS&&hasC,msg:'rule/strings:/condition:'};}
+if(/\.sigma$/.test(low)||/sigma/.test(low)){const ok=/title\s*:/.test(txt)&&/logsource\s*:/.test(txt)&&/detection\s*:/.test(txt);return {ok,msg:'title/logsource/detection'};}
+if(/\.ya?ml$/.test(low)){const ok=/\bid\s*:/.test(txt)&&/info\s*:/.test(txt);return {ok,msg:'id/info (+requests)'};}
+return {ok:/id\s*:/.test(txt),msg:'id field'};
+}
+async function loadUpdates(silent){
+const box=document.getElementById('updList');
+try{
+let all=[];
+for(const r of REPOS){
+try{const {data}=await gh('/repos/'+r.o+'/'+r.r+'/commits?per_page=5');(data||[]).forEach(c=>all.push({repo:repoKey(r),msg:(c.commit||{}).message||'',date:((c.commit||{}).author||{}).date||'',url:c.html_url||r.u}));}catch(e){}
+}
+all.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+const seen=sGet('rh_seen',[]);
+const fresh=all.filter(c=>seen.indexOf(c.sha||c.url)<0);
+if(fresh.length){const hits=all.filter(c=>{const s=(c.msg||'').toLowerCase();return watch().some(w=>s.includes(w.toLowerCase()));});
+if(hits.length)notify('RuleHunt: '+hits.length+' update(s)',hits.slice(0,3).map(c=>c.repo).join(', '));}
+sSet('rh_seen',all.map(c=>c.sha||c.url).slice(0,120));
+box.innerHTML=all.slice(0,40).map(c=>`<div class="card"><b>${esc(c.repo)}</b><p>${esc(c.msg.split('\n')[0]).slice(0,160)}</p><small>${esc((c.date||'').slice(0,10))} · <a target="_blank" rel="noopener" style="color:var(--blu)" href="${c.url}">commit ↗</a></small></div>`).join('');
+document.getElementById('updLine').textContent='✓ '+new Date().toLocaleTimeString();
+}catch(e){if(!silent)toast(t('nodata'));}
+}
+function watch(){return sGet('rh_watch',[]);} function setWatch(w){sSet('rh_watch',w);}
+function wAdd(){const v=document.getElementById('wIn').value.trim();if(v.length<2){toast(t('needKw'));return;}
+const w=watch();if(w.map(x=>x.toLowerCase()).indexOf(v.toLowerCase())>=0){toast(t('dup'));return;}
+w.push(v);setWatch(w);renderW();toast(t('added'));}
+function wDel(i){const w=watch();w.splice(i,1);setWatch(w);renderW();}
+function renderW(){const w=watch();document.getElementById('wList').innerHTML=w.map((x,i)=>`<div class="note" style="display:flex;gap:8px;align-items:center"><span style="flex:1">${esc(x)}</span><button onclick="wDel(${i})" style="background:none;border:none;cursor:pointer">❌</button></div>`).join('');}
+function notify(ti,bo){try{if('Notification' in window&&Notification.permission==='granted')new Notification(ti,{body:String(bo).slice(0,140)});}catch(e){}}
+function enableNotif(){try{if(!('Notification' in window)){toast(t('permOff'));return;}Notification.requestPermission().then(p=>toast(p==='granted'?t('permOn'):t('permOff')));}catch(e){toast(t('permOff'));}}
+function testNotif(){notify(t('testT'),t('testB'));}
+function proJoin(){try{const L=sGet('rh_pro',[]);L.unshift({time:new Date().toLocaleString()});sSet('rh_pro',L);}catch(e){}toast(t('joined'));}
+function copyTxt(x){try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(x);}catch(e){}toast(t('copied'));}
+function renderPay(){const el=document.getElementById('payBox');if(!el)return;const P=CONFIG.pay;
+const row=(l,v)=>`<div style="margin:6px 0"><b>${l}:</b> <code style="direction:ltr">${v}</code> <button class="alt sm" style="padding:4px 12px;font-size:12px" onclick="copyTxt('${v.replace(/ /g,'')}')">${t('copyB')}</button></div>`;
+el.innerHTML=`<b>${t('payT2')}</b>`+row('₿ BTC',P.btc)+row('₮ USDT-TRC20',P.usdt)+row('🏦 '+P.name+' TRY',P.try)+row('🏦 '+P.name+' USD',P.usd);}
+function loadAds(){const A=CONFIG.ads,el=document.getElementById('adFoot');if(!el)return;
+if(A.client){el.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+A.client+'" data-ad-slot="'+(A.slot||'')+'" data-ad-format="auto"></ins>';
+if(!document.querySelector('script[src*="adsbygoogle"]')){const s=document.createElement('script');s.async=true;s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+A.client;s.crossOrigin='anonymous';document.head.appendChild(s);}try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}
+else if(A.carbonServe){el.innerHTML='';const s=document.createElement('script');s.async=true;s.id='_carbonads_js';s.src='//cdn.carbonads.com/carbon.js?serve='+A.carbonServe+'&placement='+A.carbonPlacement;el.appendChild(s);}}
+setInterval(()=>loadUpdates(true),1800000);
+setLang('en');loadAds();renderPay();renderW();loadRepos();
+</script>
+</body>
+</html>
