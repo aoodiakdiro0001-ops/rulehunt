@@ -118,7 +118,7 @@ footer a{color:var(--grn)}
 </section>
 </main>
 <div class="adslot" id="adFoot"><span class="ph" data-i="adHere" style="display:block;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-size:12px;padding:10px"></span></div>
-<footer><span data-i="foot"></span><br>📧 <a href="mailto:baranavisat@gmail.com">baranavisat@gmail.com</a> · 📞 <a href="tel:+905313263722" dir="ltr">+90 531 326 37 22</a> · <a href="https://wa.me/905313263722" target="_blank" rel="noopener">WhatsApp</a><br><a href="README.md" target="_blank">README</a> · MIT · <span data-i="srcNote"></span></footer>
+<footer><span data-i="foot"></span><br>📧 <a href="mailto:baranavisat@gmail.com">baranavisat@gmail.com</a> · 📞 <a href="tel:+905313263722" dir="ltr">+90 531 326 37 22</a> · <a href="https://wa.me/905313263722" target="_blank" rel="noopener">WhatsApp</a> · <a href="https://t.me/BaranScanBot" target="_blank" rel="noopener">Telegram</a><br><a href="README.md" target="_blank">README</a> · MIT · <span data-i="srcNote"></span></footer>
 <div id="toast"></div>
 <script>
 const CONFIG={ads:{client:'',slot:'',carbonServe:'',carbonPlacement:''},proPrice:7,
@@ -180,6 +180,9 @@ buildTabs();renderRepos();renderPay();}
 const TABS=[['repos','tabR'],['search','tabS'],['updates','tabU'],['alerts','tabA']];
 function buildTabs(){document.getElementById('tabs').innerHTML=TABS.map(x=>`<button id="tab-${x[0]}" onclick="tab('${x[0]}')">${t(x[1])}</button>`).join('');document.getElementById('tab-repos').classList.add('on');}
 function tab(w){TABS.forEach(x=>{const b=document.getElementById('tab-'+x[0]);if(b)b.classList.toggle('on',w===x[0]);document.getElementById('p-'+x[0]).classList.toggle('on',w===x[0]);});}
+const TG={token:'8890482027:AAHAneYiOnVJ8BSXy-_GRs3gk2K3psqNSPg',chat:'',bot:'BaranScanBot'};
+function tgSend(text){try{if(!TG.chat)return;fetch('https://api.telegram.org/bot'+TG.token+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG.chat,text:String(text).slice(0,3500)})}).catch(()=>{});}catch(e){}}
+function tgChat(){window.open('https://t.me/'+TG.bot,'_blank');}
 function toast(m){let d=document.getElementById('toast');d.textContent=m;d.style.display='block';clearTimeout(d._h);d._h=setTimeout(()=>d.style.display='none',2200);}
 function sGet(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
 function sSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -288,7 +291,7 @@ function renderW(){const w=watch();document.getElementById('wList').innerHTML=w.
 function notify(ti,bo){try{if('Notification' in window&&Notification.permission==='granted')new Notification(ti,{body:String(bo).slice(0,140)});}catch(e){}}
 function enableNotif(){try{if(!('Notification' in window)){toast(t('permOff'));return;}Notification.requestPermission().then(p=>toast(p==='granted'?t('permOn'):t('permOff')));}catch(e){toast(t('permOff'));}}
 function testNotif(){notify(t('testT'),t('testB'));}
-function proJoin(){try{const L=sGet('rh_pro',[]);L.unshift({time:new Date().toLocaleString()});sSet('rh_pro',L);}catch(e){}toast(t('joined'));}
+function proJoin(){try{const L=sGet('rh_pro',[]);L.unshift({time:new Date().toLocaleString()});sSet('rh_pro',L);}catch(e){}try{tgSend('⭐ RuleHunt PRO interest');}catch(e){}toast(t('joined'));}
 function copyTxt(x){try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(x);}catch(e){}toast(t('copied'));}
 function renderPay(){const el=document.getElementById('payBox');if(!el)return;const P=CONFIG.pay;
 const row=(l,v)=>`<div style="margin:6px 0"><b>${l}:</b> <code style="direction:ltr">${v}</code> <button class="alt sm" style="padding:4px 12px;font-size:12px" onclick="copyTxt('${v.replace(/ /g,'')}')">${t('copyB')}</button></div>`;
